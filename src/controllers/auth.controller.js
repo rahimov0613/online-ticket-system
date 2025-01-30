@@ -1,4 +1,5 @@
 import { User } from '../models/index.js';
+import { blacklistedTokens } from '../middlewares/auth.middleware.js';
 
 export const authController = {
   async register(req, res, next) {
@@ -49,6 +50,14 @@ export const authController = {
       next(error);
     }
   },
+  async getAll(req, res, next) {
+    try {
+      const users = await User.find();
+      res.send(users);
+    } catch (error) {
+      next(error);
+    }
+  },
   async profile(req, res, next) {
     try {
       const query = req.query
@@ -77,8 +86,43 @@ export const authController = {
   },
   async logout(req, res, next) {
     try {
+      const token = req.headers["authorization"];
+
+      if (!token) {
+        return res.status(401).json({ message: "Token topilmadi!" });
+      }
+      blacklistedTokens.add(token);
+      res.json({ message: "Siz muvaffaqiyatli chiqdingiz!" });
+
     } catch (error) {
       next(error);
     }
   },
+  async update(req, res, next) {
+    try {
+      const { id } = req.params;
+      const body = req.body;
+      const user = await User.findByIdAndUpdate(id, body, { new: true });
+      if (!user) {
+        throw new Error('User not found');
+      }
+      res.status(200).json(user);
+    } catch (error) {
+      next(error);
+    }
+  },
+  async delete(req, res, next) {
+    try {
+      const { id } = req.params;
+      const user = await User.findByIdAndDelete(id);
+      if (!user) {
+        throw new Error('User not found');
+      }
+      res.status(204).json({
+        message: 'User deleted successfully',
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 };

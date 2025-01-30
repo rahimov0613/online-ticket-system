@@ -35,18 +35,38 @@ export const orderController = {
   },
   async getById(req, res, next) {
     try {
+      const { id } = req.params;
+      const order = await Order.findById(id)
+      if (!order) {
+        throw new Error('Order not found');
+      }
+      return res.status(200).json(order);
     } catch (error) {
       next(error);
     }
   },
   async update(req, res, next) {
     try {
+      const { id } = req.params;
+      const order = await Order.findByIdAndUpdate(id, req.body, { new: true });
+      if (!order) {
+        throw new Error('Order not found');
+      }
+      return res.status(200).json(order);
     } catch (error) {
       next(error);
     }
   },
   async delete(req, res, next) {
     try {
+      const { id } = req.params;
+      const order = await Order.findByIdAndDelete(id);
+      if (!order) {
+        throw new Error('Order not found');
+      }
+      return res.status(200).json({
+        message: 'Deleted',
+      });
     } catch (error) {
       next(error);
     }

@@ -1,19 +1,8 @@
-const jwt = require('jsonwebtoken');
-app.use(express.json());
-const authMiddleware = (req, res, next) => {
-  const token = req.header('Authorization')?.replace('Bearer ', '');
-
-  if (!token) {
-    return res.status(401).json({ message: 'Token mavjud emas.' });
-  }
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
-    next();
-  } catch (error) {
-    res.status(401).json({ message: 'Noto\'g\'ri token.', error: error.message });
-  }
+export const errormiddleware = (err, req, res, next) => {
+  console.error(err.stack);
+  res.status(err.statusCode || 500).json({
+    success: false,
+    message: err.message || 'Server Error',
+  });
 };
 
-module.exports = authMiddleware;

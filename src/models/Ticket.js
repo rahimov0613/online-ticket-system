@@ -22,7 +22,7 @@ const ticketModel = new Schema(
       default: 'available',
     },
     price: {
-      type: Number,
+      type: Number, 
       required: true,
     },
     date: {
