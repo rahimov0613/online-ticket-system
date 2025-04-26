@@ -1,4 +1,5 @@
 import { User } from '../models/index.js';
+import jwt from 'jsonwebtoken'
 import { blacklistedTokens } from '../middlewares/auth.middleware.js';
 
 export const authController = {
@@ -27,10 +28,6 @@ export const authController = {
     try {
       const body = req.body;
 
-      if (!body.username || !body.password) {
-        throw new Error('Username and password are required');
-      }
-
       const user = await User.findOne({
         username: body.username,
       });
@@ -45,7 +42,15 @@ export const authController = {
         throw new Error('Invalid credentials');
       }
 
-      res.send(user);
+      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+        expiresIn: '1h',
+      });
+      if (!token) {
+        throw new Error('Token generation failed');
+      }
+
+
+      res.send(token);
     } catch (error) {
       next(error);
     }

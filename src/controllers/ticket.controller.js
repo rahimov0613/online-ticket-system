@@ -81,7 +81,7 @@ export const ticketController = {
       if (!ticket) {
         throw new Error('Ticket not found');
       }
-      res.status(204).json( {
+      res.status(204).json({
         message: 'Ticket deleted successfully',
       });
     } catch (error) {

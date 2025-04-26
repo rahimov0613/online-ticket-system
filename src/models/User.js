@@ -1,5 +1,14 @@
 import { Schema, model } from 'mongoose';
 import { genSalt, hash, compare } from 'bcrypt';
+import zod from 'zod';
+
+// User modeli uchun validatsiya skhema
+export const UserValidationSchema = zod.object({
+  username: zod.string().min(3).max(255),
+  email: zod.string().email(),
+  password: zod.string().min(6),
+});
+
 
 const userSchema = new Schema(
   {

@@ -11,6 +11,8 @@ app.use(errormiddleware);
 app.use(checkBlacklistedToken);
 connectDB()
 
+
+
 app.use((req, res, next) => {
   console.time('middleware');
   console.log({
@@ -22,6 +24,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/api', apiRouter);
+
 
 app.listen(port, () => {
   console.log(`Server running on port : http://localhost:${port}`);
